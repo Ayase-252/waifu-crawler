@@ -5,7 +5,7 @@ This module handles requests to hosts in regulated way. e.g constant request
 rate. Request in this library will behave in asynchonous way.
 """
 from datetime import datetime, timedelta
-from threading import Thread, Timer, Lock, current_thread
+from threading import Thread, Timer, Lock
 import warnings
 
 import requests

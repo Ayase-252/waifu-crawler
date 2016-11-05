@@ -28,8 +28,8 @@ def parse_detail_page(page_html):
     """
     """
     parsed_html = BeautifulSoup(page_html, 'html5lib')
-    stats = parsed_html.find(id='stats')
 
+    stats = parsed_html.find(id='stats')
     id_regx = re.compile(r'Id: (?P<id>\d+)')
     picture_id_str = stats.find(text=id_regx)
     picture_id = int(id_regx.match(picture_id_str).group('id'))
