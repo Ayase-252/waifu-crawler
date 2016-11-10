@@ -9,10 +9,12 @@ import os
 
 from request.scheduler import RequestScheduler
 from crawler.parser import parse_query_page, parse_detail_page
+from file_logger.file_logger import FileLogger
 from conf import FILE_DESTINATION
 
 base_url = 'http://konachan.net'
 DECISION_FUNCTION = None
+file_logger = FileLogger('file.log')
 
 
 def make_destination_path():
@@ -34,16 +36,20 @@ class DecisionFunctionFactory:
 def download_handler(response, pid, ptype):
     """
     """
-    file_path = make_destination_path() + '/'
-    file_name = str(pid) + '.' + ptype
-    file_full_path = file_path + file_name
-    print('Writing to', file_full_path)
-    if not os.path.isdir(file_path):
-        os.mkdir(file_path)
-    picture = open(file_full_path, mode='wb')
-    picture.write(response.content)
-    picture.close()
-    print('Picture', pid, 'has been saved at', file_full_path)
+    if file_logger.is_in(pid):
+        print('Picture', pid, 'has been downloaded.')
+    else:
+        file_path = make_destination_path() + '/'
+        file_name = str(pid) + '.' + ptype
+        file_full_path = file_path + file_name
+        print('Writing to', file_full_path)
+        if not os.path.isdir(file_path):
+            os.mkdir(file_path)
+        picture = open(file_full_path, mode='wb')
+        picture.write(response.content)
+        picture.close()
+        file_logger.add(pid)
+        print('Picture', pid, 'has been saved at', file_full_path)
 
 
 def detail_page_handler(response):
@@ -74,7 +80,7 @@ def run(page_limit=10, score_threshold=100):
     """
     global DECISION_FUNCTION
     DECISION_FUNCTION = DecisionFunctionFactory(score_threshold)
-    RequestScheduler.initialize(request_interval=1500)
+    RequestScheduler.initialize(request_interval=2000)
 
     for i in range(1, page_limit + 1):
         RequestScheduler.request(base_url + '/post', params={
@@ -83,5 +89,5 @@ def run(page_limit=10, score_threshold=100):
 
     while RequestScheduler.is_working():
         pass
-
+    file_logger.finalize()
     print('Waife-crawler finished.')

@@ -55,6 +55,7 @@ def clear_test_temporary_file():
         if os.path.isfile(datestr + '/' + file_):
             os.remove(datestr + '/' + file_)
     os.removedirs(datestr)
+    os.remove('file.log')
 
 def make_full_path(file_name):
     datestr = date.today().strftime('%Y-%m-%d')
