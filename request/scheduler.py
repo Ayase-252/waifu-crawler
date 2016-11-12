@@ -9,6 +9,7 @@ from threading import Thread, Timer, Lock
 import warnings
 
 import requests
+from thread_manager.thread_manager import ThreadManager
 from .memory import RequestMemory
 
 
@@ -68,9 +69,12 @@ class RequestScheduler:
         }
         cls._pend_request(request_id, request_time)
         if can_be_sent_immediately:
-            Thread(target=cls._request, kwargs=request_kwargs).run()
+            #Thread(target=cls._request, kwargs=request_kwargs).run()
+            ThreadManager.run(function=cls._request, kwargs=request_kwargs)
         else:
-            Timer(interval/1000, function=cls._request, kwargs=request_kwargs).start()
+            #Timer(interval/1000, function=cls._request, kwargs=request_kwargs).start()
+            ThreadManager.run_after(interval/1000, function=cls._request,
+                                    kwargs=request_kwargs)
         return request_id
 
     @classmethod
