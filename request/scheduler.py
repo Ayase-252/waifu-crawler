@@ -5,13 +5,15 @@ This module handles requests to hosts in regulated way. e.g constant request
 rate. Request in this library will behave in asynchonous way.
 """
 from datetime import datetime, timedelta
-from threading import Thread, Timer, Lock
+from threading import Lock
 import warnings
 
 import requests
 from thread_manager.thread_manager import ThreadManager
 from .memory import RequestMemory
+from logger import getLogger
 
+logger = getLogger('waife-crawler.scheduler')
 
 class RequestScheduler:
     """
@@ -69,12 +71,14 @@ class RequestScheduler:
         }
         cls._pend_request(request_id, request_time)
         if can_be_sent_immediately:
-            #Thread(target=cls._request, kwargs=request_kwargs).run()
-            ThreadManager.run(function=cls._request, kwargs=request_kwargs)
+            ThreadManager.run(function=cls._request, kwargs=request_kwargs,
+                              success_handler=cls._decrease_pending_counter,
+                              fail_handler=cls._decrease_pending_counter)
         else:
-            #Timer(interval/1000, function=cls._request, kwargs=request_kwargs).start()
             ThreadManager.run_after(interval/1000, function=cls._request,
-                                    kwargs=request_kwargs)
+                                    kwargs=request_kwargs,
+                                    success_handler=cls._decrease_pending_counter,
+                                    fail_handler=cls._decrease_pending_counter)
         return request_id
 
     @classmethod
@@ -166,6 +170,7 @@ class RequestScheduler:
         response = requests.get(url, params=params, headers=user_headers)
         if response.status_code != 200:
             cls._fail_request(request_id)
+            raise RuntimeError('Response with status_code %d', response.status.code)
         else:
             if response_handler is not None:
                 if handler_kwargs is not None:
@@ -234,7 +239,7 @@ class RequestScheduler:
         """
         Set request has succeeded
         """
-        cls._decrease_pending_counter()
+        #cls._decrease_pending_counter()
         cls.request_memory.update(request_id, {
             'status': 'Success',
             'response': response
@@ -245,23 +250,25 @@ class RequestScheduler:
         """
         Set request has failed
         """
-        cls._decrease_pending_counter()
+        #cls._decrease_pending_counter()
         cls.request_memory.update(request_id, {
             'status': 'Failed'
         })
 
     @classmethod
-    def _increase_pending_counter(cls):
+    def _increase_pending_counter(cls, *args):
         """
         """
         cls._counter_lock.acquire()
         cls.pending_requests += 1
+        logger.info('Pending thread counter increases to %d.', cls.pending_requests)
         cls._counter_lock.release()
 
     @classmethod
-    def _decrease_pending_counter(cls):
+    def _decrease_pending_counter(cls, *args):
         """
         """
         cls._counter_lock.acquire()
         cls.pending_requests -= 1
+        logger.info('Pending thread counter decreases to %d.', cls.pending_requests)
         cls._counter_lock.release()
