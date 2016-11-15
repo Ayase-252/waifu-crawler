@@ -2,7 +2,9 @@
 File logger
 
 This module manage a logger to maintain these lists of downloaded files.
+
 """
+
 
 class FileLogger:
     """

@@ -15,6 +15,7 @@ from logger import getLogger
 
 logger = getLogger('waife-crawler.scheduler')
 
+
 class RequestScheduler:
     """
     Request Scheduler
@@ -52,6 +53,8 @@ class RequestScheduler:
         returns:
         ID of request for later use.
         """
+        warnings.warn('Deprecated. Use schedule_get() and schedule_get_binary() instead.',
+                      DeprecationWarning)
         can_be_sent_immediately = False
         if cls._is_ready_for_send_request_now():
             can_be_sent_immediately = True
@@ -75,7 +78,7 @@ class RequestScheduler:
                               success_handler=cls._decrease_pending_counter,
                               fail_handler=cls._decrease_pending_counter)
         else:
-            ThreadManager.run_after(interval/1000, function=cls._request,
+            ThreadManager.run_after(interval / 1000, function=cls._request,
                                     kwargs=request_kwargs,
                                     success_handler=cls._decrease_pending_counter,
                                     fail_handler=cls._decrease_pending_counter)
@@ -111,7 +114,6 @@ class RequestScheduler:
         result = cls.request_memory.retrieve(request_id)
         return result['status'] == 'Success'
 
-
     @classmethod
     def get_response(cls, request_id):
         """
@@ -121,6 +123,8 @@ class RequestScheduler:
         response objects if request succeeded and save_response is True,
         otherwise None
         """
+        warnings.warn('Deprecated due to high posibility to cause dead lock',
+                      DeprecationWarning)
         result = cls.request_memory.retrieve(request_id)
         if result is not None:
             return result['response']
@@ -132,6 +136,8 @@ class RequestScheduler:
         """
         Gets the time when the request sent
         """
+        warnings.warn('Deprecated. Support to get sent time will be terminated.',
+                      DeprecationWarning)
         request = cls.request_memory.retrieve(request_id)
         if 'sent time' in request:
             return request['sent time']
@@ -170,7 +176,8 @@ class RequestScheduler:
         response = requests.get(url, params=params, headers=user_headers)
         if response.status_code != 200:
             cls._fail_request(request_id)
-            raise RuntimeError('Response with status_code %d', response.status.code)
+            raise RuntimeError(
+                'Response with status_code %d', response.status.code)
         else:
             if response_handler is not None:
                 if handler_kwargs is not None:
@@ -181,14 +188,14 @@ class RequestScheduler:
                 response = None
             cls._succeed_request(request_id, response)
 
-
     @classmethod
     def _is_ready_for_send_request_now(cls):
         """
         Test whether a request can be sent immediately
         """
         return cls.latest_request_time is None or \
-            (datetime.now() - cls.latest_request_time).microseconds / 1000 >= cls.request_interval
+            (datetime.now() - cls.latest_request_time).microseconds / \
+            1000 >= cls.request_interval
 
     @classmethod
     def _set_latest_request_time(cls, time_delayed=0):
@@ -239,7 +246,7 @@ class RequestScheduler:
         """
         Set request has succeeded
         """
-        #cls._decrease_pending_counter()
+        # cls._decrease_pending_counter()
         cls.request_memory.update(request_id, {
             'status': 'Success',
             'response': response
@@ -250,7 +257,7 @@ class RequestScheduler:
         """
         Set request has failed
         """
-        #cls._decrease_pending_counter()
+        # cls._decrease_pending_counter()
         cls.request_memory.update(request_id, {
             'status': 'Failed'
         })
@@ -261,7 +268,8 @@ class RequestScheduler:
         """
         cls._counter_lock.acquire()
         cls.pending_requests += 1
-        logger.info('Pending thread counter increases to %d.', cls.pending_requests)
+        logger.info('Pending thread counter increases to %d.',
+                    cls.pending_requests)
         cls._counter_lock.release()
 
     @classmethod
@@ -270,5 +278,76 @@ class RequestScheduler:
         """
         cls._counter_lock.acquire()
         cls.pending_requests -= 1
-        logger.info('Pending thread counter decreases to %d.', cls.pending_requests)
+        logger.info('Pending thread counter decreases to %d.',
+                    cls.pending_requests)
         cls._counter_lock.release()
+
+    @classmethod
+    def schedule_get(cls, url, *, params=None, headers=None, pre_request_handler=None,
+                     success_handler=None, fail_handler=None):
+        """
+        Schedules a GET request to donated URL.
+
+        Args:
+        url                     URL of web resource requested
+        *   (Below arguments are keyword arguments)
+        params                  Parameters of request
+        headers                 Headers of HTTP request
+        pre_request_handler     Function being called right before request.
+                                No argument is allowed.
+                                It can be used to display a prompt to user.
+        success_handler         Function being called after request returned
+                                successfully.
+                                The text of response will be the first
+                                positional argument.
+        failed_handler          Function being called after occurence of
+                                exception.
+                                Exception object will be the first positional
+                                argument.
+        """
+        remaining_time_ms = cls._remaining_waiting_time()
+        kwargs = {
+            'url': url,
+            'params': params,
+            'headers': headers,
+            'pre_request_handler': pre_request_handler
+        }
+        cls._increase_pending_counter()
+        cls._set_latest_request_time(remaining_time_ms)
+        if remaining_time_ms == 0:
+            ThreadManager.run(function=cls._general_get,
+                              kwargs=kwargs,
+                              success_handler=success_handler,
+                              fail_handler=fail_handler,
+                              final_handler=cls._decrease_pending_counter)
+        else:
+            ThreadManager.run_after(remaining_time_ms / 1000,
+                                    function=cls._general_get,
+                                    kwargs=kwargs,
+                                    success_handler=success_handler,
+                                    fail_handler=fail_handler,
+                                    final_handler=cls._decrease_pending_counter)
+
+    @classmethod
+    def _general_get(cls, url, *, params=None, headers=None, pre_request_handler=None):
+        """
+        Performs a GET request
+        """
+        pre_request_handler()
+        request_headers = _generate_complete_header(headers)
+        response = requests.get(url, params=params, headers=request_headers)
+        if response.status_code != 200:
+            raise RuntimeError(
+                'Response failed, status code %d', response.status_code)
+        return response.text
+
+
+def _generate_complete_header(headers=None):
+    ua_header = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.'
+                      '36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36'
+    }
+    if headers is not None:
+        return headers.update(ua_header)
+    else:
+        return ua_header

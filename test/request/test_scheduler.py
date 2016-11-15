@@ -85,3 +85,17 @@ class RequestSchedulerTest(unittest.TestCase):
 
         self.assertTrue(RequestScheduler.is_working())
         RequestScheduler.wait()
+
+    @Mocker()
+    def test_new_web_page_request_method(self, mocker):
+        """
+        Check new web page request method
+        """
+        mocker.get(r'http://test.com', text='hello world')
+
+        RequestScheduler.initialize()
+        RequestScheduler.schedule_get(
+            url='http://test.com',
+            pre_request_handler=lambda: print('pre request handler'),
+            success_handler=lambda response: self.assertEqual(response, 'hello world'),
+            fail_handler=lambda ex: self.assertIsNone(ex))
