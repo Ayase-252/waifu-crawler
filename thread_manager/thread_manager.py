@@ -95,7 +95,7 @@ class ThreadManager:
             callback(result)
 
     @classmethod
-    def simple_run_after(cls,sec_to_run, function, callback=None, **kwargs):
+    def simple_run_after(cls, sec_to_run, function, callback=None, **kwargs):
         cls.logger.info('A thread will start to execute %s with args %s in %fs.',
                         function.__name__, kwargs, sec_to_run)
         Timer(
