@@ -1,5 +1,6 @@
 [run]
 branch = True
+include = */waife-crawler/*
 omit =
         */test/*
         *__init__*

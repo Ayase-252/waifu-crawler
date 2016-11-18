@@ -5,9 +5,10 @@ from unittest import TestCase
 import os
 from datetime import date
 
+from requests import get
 from requests_mock import Mocker
 
-from command.waife_crawler import run
+from command.waife_crawler import run, download_handler
 
 
 def read_file(file_path):
@@ -18,6 +19,16 @@ def read_file(file_path):
     text = file_.read()
     file_.close()
     return text
+
+
+@Mocker()
+def make_fake_response(content, mocker):
+    """
+    Returns a fake response object.
+    """
+    mocker.get('http://fake.com', content=content)
+    r = get('http://fake.com')
+    return r
 
 
 def setup_testcase(mocker):
@@ -57,13 +68,37 @@ def clear_test_temporary_file():
     os.removedirs(datestr)
     os.remove('file.log')
 
+
+def delete_test_picture_file(file_name):
+    """
+    Delete test picture file.
+    """
+    datestr = date.today().strftime('%Y-%m-%d')
+    if os.path.isfile(make_full_path(file_name)):
+        os.remove(make_full_path(file_name))
+
+
+def delete_test_picture_directory():
+    """
+    Delete test picture directory.
+    """
+    if os.path.isdir(make_full_path('')):
+        os.removedirs(make_full_path(''))
+
+
 def make_full_path(file_name):
     datestr = date.today().strftime('%Y-%m-%d')
     return datestr + '/' + file_name
 
+
 class WaifeCrawlerTest(TestCase):
     """
     """
+
+    def tearDown(self):
+        delete_test_picture_directory()
+        os.remove('file.log')
+
     @Mocker()
     def test_acceptance_test_I(self, mocker):
         setup_testcase(mocker)
@@ -74,7 +109,25 @@ class WaifeCrawlerTest(TestCase):
         picture_230237 = read_file(make_full_path('230237.png'))
         picture_230239 = read_file(make_full_path('230239.png'))
 
-        clear_test_temporary_file()
+        delete_test_picture_file('230230.jpg')
+        delete_test_picture_file('230237.png')
+        delete_test_picture_file('230239.png')
         self.assertEqual(picture_230230, '230230')
         self.assertEqual(picture_230237, '230237')
         self.assertEqual(picture_230239, '230239')
+
+    def test_download_handler_in_duplicated_picture(self):
+        """
+        Solves a bug that handler failed to identify a duplicated picture.
+        """
+        picture_id = 123423
+        picture_type = 'png'
+        first_response = make_fake_response(b'this is new picture.')
+
+        download_handler(first_response, picture_id, picture_type)
+        second_response = make_fake_response(b'wrong')
+        download_handler(second_response, picture_id, picture_type)
+
+        picture = read_file(make_full_path('123423.png'))
+        delete_test_picture_file('123423.png')
+        self.assertEqual(picture, b'this is new picture.'.decode('utf-8'))

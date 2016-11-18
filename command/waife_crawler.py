@@ -89,5 +89,4 @@ def run(page_limit=10, score_threshold=100):
 
     while RequestScheduler.is_working():
         pass
-    file_logger.finalize()
     print('Waife-crawler finished.')
