@@ -1,8 +1,8 @@
 """
 Thread manager
 
-This is a FACADE of bulit-in module threading. To ease the debug in multi-thread,
-some loggers will be added.
+This is a FACADE of bulit-in module threading. To ease the debug in
+multi-thread, some loggers will be added.
 """
 from threading import Thread, Timer
 
@@ -16,12 +16,12 @@ class ThreadManager:
     logger = getLogger('waife-crawl.ThreadManager')
 
     @classmethod
-    def run(cls, function, kwargs=None, success_handler=None, fail_handler=None,
-            final_handler=None):
+    def run(cls, function, kwargs=None, success_handler=None,
+            fail_handler=None, final_handler=None):
         """
         Start a thread to run the given function.
-        If function is executed without exception, the return value will be passed
-        to success_handler.Then Success handler will be executed.
+        If function is executed without exception, the return value will be
+        passed to success_handler.Then Success handler will be executed.
         If exception is raised during function is executing, fail_handler which
         the exception will be passed to, will be executed., if it has.
         """
@@ -34,8 +34,8 @@ class ThreadManager:
         }).run()
 
     @classmethod
-    def _run(cls, function, kwargs=None, success_handler=None, fail_handler=None,
-             final_handler=None):
+    def _run(cls, function, kwargs=None, success_handler=None,
+             fail_handler=None, final_handler=None):
         """
         Code that the new thread runs.
         """
@@ -47,8 +47,10 @@ class ThreadManager:
             else:
                 result = function()
             if success_handler is not None:
-                cls.logger.debug("Handles Success, Function %s with args %s will be"
-                                 " called.", success_handler.__name__, result)
+                cls.logger.debug("Handles Success, Function %s with args %s "
+                                 "will be called.",
+                                 success_handler.__name__,
+                                 result)
                 success_handler(result)
         except Exception as exception:
             cls.logger.error("Fail due to exception %s", exception)
@@ -96,8 +98,11 @@ class ThreadManager:
 
     @classmethod
     def simple_run_after(cls, sec_to_run, function, callback=None, **kwargs):
-        cls.logger.info('A thread will start to execute %s with args %s in %fs.',
-                        function.__name__, kwargs, sec_to_run)
+        cls.logger.info('A thread will start to execute %s with args %s in'
+                        '%fs.',
+                        function.__name__,
+                        kwargs,
+                        sec_to_run)
         Timer(
             sec_to_run, cls._simple_run,
             args=(function, callback), kwargs=kwargs
