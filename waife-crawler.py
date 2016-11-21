@@ -12,4 +12,4 @@ if __name__ == '__main__':
                         'higher than threshold will be downloaded. '
                         '(Default 100)')
     sys_args = parser.parse_args(sys.argv[1:])
-    waife_crawler.run(sys_args.threshold)
+    waife_crawler.run(score_threshold=sys_args.threshold)
