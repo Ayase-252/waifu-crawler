@@ -34,7 +34,8 @@ class FileLogger:
             files = self.log_file.read()
             if files != '':
                 self.log_memory = [int(file_id)
-                                   for file_id in files.split('\n')]
+                                   for file_id in files.split('\n')
+                                   if file_id != '']
             else:
                 self.log_memory = []
             self.log_file.close()
