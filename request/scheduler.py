@@ -33,6 +33,7 @@ class RequestScheduler:
         cls.request_memory = RequestMemory()
         cls.latest_request_time = None
         cls.pending_requests = 0
+        logger.debug('Counter lock is initialized.')
         cls._counter_lock = Lock()
 
     @classmethod
@@ -266,21 +267,21 @@ class RequestScheduler:
     def _increase_pending_counter(cls, *args):
         """
         """
-        cls._counter_lock.acquire()
+        cls._acquire_counter_lock()
         cls.pending_requests += 1
         logger.info('Pending thread counter increases to %d.',
                     cls.pending_requests)
-        cls._counter_lock.release()
+        cls._release_counter_lock()
 
     @classmethod
     def _decrease_pending_counter(cls, *args):
         """
         """
-        cls._counter_lock.acquire()
+        cls._acquire_counter_lock()
         cls.pending_requests -= 1
         logger.info('Pending thread counter decreases to %d.',
                     cls.pending_requests)
-        cls._counter_lock.release()
+        cls._release_counter_lock()
 
     @classmethod
     def schedule_get(cls, url, *, params=None, headers=None, pre_request_handler=None,
@@ -340,6 +341,68 @@ class RequestScheduler:
             raise RuntimeError(
                 'Response failed, status code %d', response.status_code)
         return response.text
+
+    @classmethod
+    def _acquire_counter_lock(cls):
+        logger.debug('Counter lock is acquired')
+        cls._counter_lock.acquire()
+
+    @classmethod
+    def _release_counter_lock(cls):
+        cls._counter_lock.release()
+        logger.debug('Counter lock is released.')
+
+    @classmethod
+    def scheduler_get_js_ver(cls, url, *,
+                             params=None, headers=None, callback=None):
+        """
+        This version uses callback convention of JavaScript. The first
+        positional argument will be passed a error object if error arised in
+        process. The second argument will be passed the result of request if
+        request succeeds.
+        """
+        remaining_time_ms = cls._remaining_waiting_time()
+        kwargs = {
+            'url': url,
+            'params': params,
+            'headers': headers,
+            'callback': callback
+        }
+        cls._increase_pending_counter()
+        cls._set_latest_request_time(remaining_time_ms)
+        if remaining_time_ms == 0:
+            ThreadManager.simple_run(
+                function=cls._scheduler_get_js_ver,
+                **kwargs
+            )
+        else:
+            ThreadManager.simple_run_after(
+                remaining_time_ms / 1000,
+                function=cls._scheduler_get_js_ver,
+                **kwargs
+            )
+
+    @classmethod
+    def _scheduler_get_js_ver(cls,
+                              url, params=None, headers=None, callback=None):
+        """
+        Actual process of schduler_get_js_ver
+        """
+        request_headers = _generate_complete_header(headers)
+        try:
+            response = requests.get(url, params=params, headers=headers)
+            if response.status_code != 200:
+                raise RuntimeError('Request failed. Status code: %d',
+                                   response.status_code)
+            if callback is not None:
+                callback(None, response)
+        except AssertionError as assert_error:
+            raise assert_error
+        except Exception as general_error:
+            if callback is not None:
+                callback(general_error, None)
+        finally:
+            cls._decrease_pending_counter()
 
 
 def _generate_complete_header(headers=None):

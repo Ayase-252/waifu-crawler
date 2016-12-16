@@ -55,7 +55,8 @@ class RequestSchedulerTest(unittest.TestCase):
         """
         interval_to_test = [500, 1000, 2000]
         for interval in interval_to_test:
-            self.request_interval_test(self, mocker, interval)
+            with self.subTest(interval=interval):
+                self.request_interval_test(self, mocker, interval)
 
     @Mocker()
     def test_failed_request(self, mocker):
@@ -97,5 +98,46 @@ class RequestSchedulerTest(unittest.TestCase):
         RequestScheduler.schedule_get(
             url='http://test.com',
             pre_request_handler=lambda: print('pre request handler'),
-            success_handler=lambda response: self.assertEqual(response, 'hello world'),
+            success_handler=lambda response: self.assertEqual(
+                response, 'hello world'),
             fail_handler=lambda ex: self.assertIsNone(ex))
+        RequestScheduler.wait()
+
+    @Mocker()
+    def test_new_web_page_request_method_GET(self, mocker):
+        """
+        New request method uses conventions in JavaScript.
+
+        Note: AssertionError in this test can not be catched by mainthread. So
+              test framework do not recognize wrong result as "Error" while
+              error will be printed in terminal if test failed.
+        """
+        mocker.get(r'http://test.com', text='hello world')
+
+        RequestScheduler.scheduler_get_js_ver(
+            url='http://test.com',
+            callback=lambda error, response: self.assertEqual(
+                response.text,
+                'hello world'
+            )
+        )
+        RequestScheduler.wait()
+
+    @Mocker()
+    def test_new_web_page_request_method_GET_404(self, mocker):
+        """
+        Test js ver of GET if response is 404.
+
+        Note: AssertionError in this test can not be catched by mainthread. So
+              test framework do not recognize wrong result as "Error" while
+              error will be printed in terminal if test failed.
+        """
+        mocker.get(r'http://test.com', status_code=404)
+
+        RequestScheduler.scheduler_get_js_ver(
+            url='http://test.com',
+            callback=lambda error, response: self.assertIsInstance(
+                error, RuntimeError
+            )
+        )
+        RequestScheduler.wait()

@@ -81,23 +81,23 @@ class ThreadManager:
         }).start()
 
     @classmethod
-    def simple_run(cls, function, callback=None, **kwargs):
+    def simple_run(cls, function, _callback=None, **kwargs):
         Thread(
-            target=cls._simple_run, args=(function, callback), kwargs=kwargs
+            target=cls._simple_run, args=(function, _callback), kwargs=kwargs
         ).run()
 
     @classmethod
-    def _simple_run(cls, function, callback, **kwargs):
+    def _simple_run(cls, function, _callback=None, **kwargs):
         cls.logger.info('Function %s starts with arguments %s.',
                         function.__name__, kwargs)
         result = function(**kwargs)
-        if callback is not None:
+        if _callback is not None:
             cls.logger.info('Callback %s starts with result %s.',
-                            callback.__name__, result)
-            callback(result)
+                            _callback.__name__, result)
+            _callback(result)
 
     @classmethod
-    def simple_run_after(cls, sec_to_run, function, callback=None, **kwargs):
+    def simple_run_after(cls, sec_to_run, function, _callback=None, **kwargs):
         cls.logger.info('A thread will start to execute %s with args %s in'
                         '%fs.',
                         function.__name__,
@@ -105,5 +105,5 @@ class ThreadManager:
                         sec_to_run)
         Timer(
             sec_to_run, cls._simple_run,
-            args=(function, callback), kwargs=kwargs
+            args=(function, _callback), kwargs=kwargs
         ).start()
