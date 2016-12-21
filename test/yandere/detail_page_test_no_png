@@ -1,0 +1,20 @@
+<div>
+  <h5>Options</h5>
+  <ul>
+    <li><a class="js-posts-show-edit-tab" href="#">Edit</a></li>
+    <!--
+      <li><a href="#" onclick="Post.resize_image(); return false;">Resize image</a></li>
+     -->
+      <li><a class="original-file-changed highres-show" id="highres-show" href="https://files.yande.re/jpeg/ca41485c5427540bf1c975bee7dd768a/yande.re%20377574%20chuuko_demo_koi_ga_shitai%21%20digital_version%20redrop%20seifuku.jpg">View larger version</a>
+      </li>
+      <li><a class="original-file-changed" id="highres" href="https://files.yande.re/jpeg/ca41485c5427540bf1c975bee7dd768a/yande.re%20377574%20chuuko_demo_koi_ga_shitai%21%20digital_version%20redrop%20seifuku.jpg">Download larger version (1.19 MB JPG)</a>
+      </li>
+      <li><a href="#" onclick="User.run_login(false, function() { Post.flag(377574, function() { window.location.reload(); }) }); return false;">Flag for deletion</a></li>
+      <li><a href="#" onclick="User.run_login(false, function() { Note.create(377574) }); return false;">Add translation</a></li>
+    <li id="add-to-favs"><a href="#">Add to favorites</a></li>
+    <li id="remove-from-favs" style="display: none;"><a href="#">Remove from favorites</a></li>
+      <li id="add-to-pool" class="advanced-editing"><a data-remote="true" href="/pool/select?post_id=377574">Add to pool</a></li>
+      <li id="set-avatar"><a href="/user/set_avatar/377574">Set avatar</a></li>
+    <li><a href="/history?search=post%3A377574">Post history</a></li>
+  </ul>
+</div>
