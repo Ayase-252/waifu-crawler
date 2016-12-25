@@ -1,0 +1,22 @@
+<div>
+  <h5>Options</h5>
+  <ul>
+    <li><a class="js-posts-show-edit-tab" href="#">Edit</a></li>
+    <!--
+      <li><a href="#" onclick="Post.resize_image(); return false;">Resize image</a></li>
+     -->
+      <li><a class="original-file-changed highres-show" id="highres-show" href="https://files.yande.re/jpeg/64c7aeade1c09807a1417cfe873b81e1/yande.re%20377505%20kimi_no_na_wa%20miyamizu_mitsuha%20seifuku.jpg">View larger version</a>
+      </li>
+      <li><a class="original-file-changed" id="highres" href="https://files.yande.re/jpeg/64c7aeade1c09807a1417cfe873b81e1/yande.re%20377505%20kimi_no_na_wa%20miyamizu_mitsuha%20seifuku.jpg">Download larger version (237 KB JPG)</a>
+      </li>
+        <li><a class="original-file-unchanged" id="png" href="https://files.yande.re/image/64c7aeade1c09807a1417cfe873b81e1/yande.re%20377505%20kimi_no_na_wa%20miyamizu_mitsuha%20seifuku.png">Download PNG (1.17 MB)</a>
+        </li>
+      <li><a href="#" onclick="User.run_login(false, function() { Post.flag(377505, function() { window.location.reload(); }) }); return false;">Flag for deletion</a></li>
+      <li><a href="#" onclick="User.run_login(false, function() { Note.create(377505) }); return false;">Add translation</a></li>
+    <li id="add-to-favs"><a href="#">Add to favorites</a></li>
+    <li id="remove-from-favs" style="display: none;"><a href="#">Remove from favorites</a></li>
+      <li id="add-to-pool" class="advanced-editing"><a data-remote="true" href="/pool/select?post_id=377505">Add to pool</a></li>
+      <li id="set-avatar"><a href="/user/set_avatar/377505">Set avatar</a></li>
+    <li><a href="/history?search=post%3A377505">Post history</a></li>
+  </ul>
+</div>
