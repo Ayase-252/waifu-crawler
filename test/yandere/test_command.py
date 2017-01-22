@@ -5,8 +5,7 @@ from requests_mock import Mocker
 
 from yandere.command import *
 from yandere.selector import *
-from test.utility import read_file
-
+from test.utility import read_file, read_as_binary
 
 class RunTest(TestCase):
 
@@ -21,7 +20,7 @@ class RunTest(TestCase):
 
         # Setup target file
         mocker.get('https://files.yande.re/image/64c7aeade1c09807a1417cfe873b81e1/yande.re%20377505%20kimi_no_na_wa%20miyamizu_mitsuha%20seifuku.png',
-                   content=read_file('test/yandere/377505'))
+                   content=read_as_binary('test/yandere/picture_target'))
 
     @Mocker()
     def test_run_with_safe_seletor(self, mocker):
