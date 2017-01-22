@@ -1,7 +1,7 @@
 """
 Abstract class of all crawlers.
 
-All crawlers should subclass Crawler class here in order to be compatiable with
+All crawlers should subclass Crawler class here in order to be compatible with
 CrawlerManager used by main procedure.
 """
 

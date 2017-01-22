@@ -1,5 +1,5 @@
 """
-Parser
+Utility functions to parse web page on konachan.com
 """
 import re
 
@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 
 def parse_query_page(page_html, base_url, decision_func):
     """
-    Parse query page, return url of detail page of picture which is determined
+    Parses query page, return url of detail page of picture which is determined
     to download by decision function
     """
     parsed_html = BeautifulSoup(page_html, 'html5lib')
@@ -26,6 +26,7 @@ def parse_query_page(page_html, base_url, decision_func):
 
 def parse_detail_page(page_html):
     """
+
     """
     parsed_html = BeautifulSoup(page_html, 'html5lib')
 
@@ -60,3 +61,11 @@ def parse_detail_page(page_html):
                 'url': jpg_v1_anchor['href'],
                 'ptype': 'jpg'
             }
+
+def parse_query_page_new(text):
+    """
+    Parses query page.
+
+    It will parse all pictures on the page, and return their info in a dict. It
+    is a alternative method compatible with new design of crawler.
+    """
