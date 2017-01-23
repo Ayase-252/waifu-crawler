@@ -1,0 +1,44 @@
+<html>
+  <body>
+    <div id="stats" class="vote-container">
+<h5>Statistics</h5>
+<ul>
+  <div class="comment-avatar-container" style="margin: 0 !important"> <a class="ca206222" href="/post/show/206222" onclick="return Post.check_avatar_blacklist(206222, 230187);"><img alt="136919" class="avatar" height="125.0" src="http://konachan.net/data/avatars/136919.jpg?1446737441" width="125.0" /></a> </div>
+  <li>Id: 230187</li>
+  <li>Posted: <a href="/post?tags=date%3A2016-11-03" title="Thu Nov  3 01:28:54 2016">1 day ago</a> by <a href="/user/show/136919">Dummy</a></li>
+    <li>Size: 8000x4500</li>
+  <li>Rating: Safe <span class="vote-desc"></span></li>
+
+  <li>
+    Score: <span id="post-score-230187">113</span>
+    <span class="stars standard-vote-widget"></span>
+  </li>
+
+  <li>Favorited by: <span id="favorited-by"><a href="/user/show/148561">morsa546</a>, <a href="/user/show/154980">huxianga340</a>, <a href="/user/show/57115">obscene99</a>, <a href="/user/show/106268">Ablon</a>, <a href="/user/show/143017">chuy88</a>, <a href="/user/show/155048">c0chese</a><span id="remaining-favs" style="display: none;">, <a href="/user/show/91895">totalxp</a>, <a href="/user/show/159098">JustIvy</a>, <a href="/user/show/129533">Rotmulaag</a>, <a href="/user/show/84444">Shinigami-Seed</a>, <a href="/user/show/167109">LOSTHJX</a>, <a href="/user/show/47334">CoyoteMister</a>, <a href="/user/show/6">Wizzard</a>, <a href="/user/show/145240">enyo</a>, <a href="/user/show/35741">x13lackcat</a>, <a href="/user/show/167111">Dekays</a>, <a href="/user/show/93063">nadroj34569</a>, <a href="/user/show/167345">Lynch</a>, <a href="/user/show/3926">Exilator</a>, <a href="/user/show/25518">Chlebekk</a>, <a href="/user/show/164600">Muradin1992</a>, <a href="/user/show/15607">Alexkp</a>, <a href="/user/show/69834">Erodon</a>, <a href="/user/show/133214">Zlidyh5</a>, <a href="/user/show/76795">Relow</a>, <a href="/user/show/47625">potato123</a>, <a href="/user/show/73049">SkeevaLp</a>, <a href="/user/show/140181">KotaroFuma</a>, <a href="/user/show/151204">Kawaiikitty</a></span><span id="remaining-favs-link"> (<a href="#" onclick="$(&#39;remaining-favs&#39;).show(); $(&#39;remaining-favs-link&#39;).hide(); return false;">23 more</a>)</span></span> <span id="favorited-by-more"></span></li>
+</ul>
+</div>
+
+    <div>
+<h5>Options</h5>
+<ul>
+  <li><a href="#" onclick="$(&#39;comments&#39;).hide(); $(&#39;edit&#39;).show().scrollTo(); $(&#39;post_tags&#39;).focus(); Cookie.put(&#39;show_defaults_to_edit&#39;, 1);; return false;">Edit</a></li>
+  <!--
+    <li><a href="#" onclick="Post.resize_image(); return false;">Resize image</a></li>
+   -->
+    <li><a class="original-file-changed highres-show" href="http://konachan.net/jpeg/507cc0ad7ced2572b81c0aa5372ec309/Konachan.com%20-%20230187%20animal%20animal_ears%20bikini%20blush%20breasts%20cat%20catgirl%20cleavage%20fang%20kantoku%20kurumi_%28kantoku%29%20long_hair%20original%20photoshop%20scan%20skirt%20swimsuit%20tail%20white.jpg" id="highres-show">View larger version</a>
+    </li>
+    <li><a class="original-file-changed" href="http://konachan.net/jpeg/507cc0ad7ced2572b81c0aa5372ec309/Konachan.com%20-%20230187%20animal%20animal_ears%20bikini%20blush%20breasts%20cat%20catgirl%20cleavage%20fang%20kantoku%20kurumi_%28kantoku%29%20long_hair%20original%20photoshop%20scan%20skirt%20swimsuit%20tail%20white.jpg" id="highres">Download larger version (541 KB JPG)</a>
+    </li>
+      <li><a class="original-file-unchanged" href="http://konachan.net/image/507cc0ad7ced2572b81c0aa5372ec309/Konachan.com%20-%20230187%20animal%20animal_ears%20bikini%20blush%20breasts%20cat%20catgirl%20cleavage%20fang%20kantoku%20kurumi_%28kantoku%29%20long_hair%20original%20photoshop%20scan%20skirt%20swimsuit%20tail%20white.png" id="png">Download PNG (6.89 MB)</a>
+      </li>
+    <li><a href="#" onclick="User.run_login(false, function() { Post.flag(230187, function() { window.location.reload(); }) }); return false;">Flag for deletion</a></li>
+    <li><a href="#" onclick="User.run_login(false, function() { Note.create(230187) }); return false;">Add translation</a></li>
+  <li id="add-to-favs"><a href="#">Add to favorites</a></li>
+  <li id="remove-from-favs"><a href="#">Remove from favorites</a></li>
+    <li id="add-to-pool" class="advanced-editing"><a data-remote="true" href="/pool/select?post_id=230187">Add to pool</a></li>
+    <li id="set-avatar"><a href="/user/set_avatar/230187">Set avatar</a></li>
+  <li><a href="/history?search=post%3A230187">Post history</a></li>
+</ul>
+</div>
+  </body>
+</html>

@@ -41,3 +41,33 @@ def parse_query_page(text):
         parsed_posts.append(parsed_post)
 
     return parsed_posts
+
+
+def parse_detail_page(detail_page_text):
+    """
+    Parses detail page of picture.
+
+
+    """
+    parsed_text = BeautifulSoup(detail_page_text, 'html5lib')
+    download_links = []
+
+    # Try to find png link
+    png_parttern = re.compile(r'Download PNG')
+    png_anchor = parsed_text.find('a', text=png_parttern)
+    if png_anchor is not None:
+        download_links.append({
+            'type': 'png',
+            'link': png_anchor['href']
+        })
+
+    # Try to find jpeg link
+    jpeg_parttern = re.compile(r'Download larger version')
+    jpeg_anchor = parsed_text.find('a', text=jpeg_parttern)
+    if jpeg_anchor is not None:
+        download_links.append({
+            'type': 'jpeg',
+            'link': jpeg_anchor['href']
+        })
+
+    return download_links
