@@ -5,20 +5,24 @@ All crawlers should subclass Crawler class here in order to be compatible with
 CrawlerManager used by main procedure.
 """
 
-class Crawler:
+from abc import ABCMeta, abstractmethod
+
+
+class Crawler(metaclass=ABCMeta):
     """
     Abstract class of all crawler.
 
     All methods defined here should be implemented by subclasses. It's purely a
     virtual class.
     """
+    @abstractmethod
     def __init__(self, **kwargs):
         """
         Constrcutor of class.
         """
-        raise NotImplementedError('__init__ of ' + self.__name__ + 'has not '
-                                  'been implemented.')
+        pass
 
+    @abstractmethod
     def run(self, **kwargs):
         """
         Runs crawler.
@@ -26,5 +30,4 @@ class Crawler:
         Parsed command line will be passed in as keyword arguments. It should
         handle these command properly.
         """
-        raise NotImplementedError('run of ' + self.__name__ + 'has not '
-                                  'been implemented.')
+        pass
