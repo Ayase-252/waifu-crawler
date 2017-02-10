@@ -13,9 +13,9 @@ class KonachanCralwer(Crawler):
     Konachan Cralwer
     """
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         """
-        Does nothing
+        Initial cralwer
         """
         pass
 
