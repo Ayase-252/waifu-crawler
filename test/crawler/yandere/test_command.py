@@ -1,10 +1,10 @@
-from unittest import TestCase
+from unittest import TestCase, skip
 from os import path, remove
 
 from requests_mock import Mocker
 
-from yandere.command import *
-from yandere.selector import *
+from crawler.yandere.command import *
+from crawler.yandere.selector import *
 from test.utility import read_file, read_as_binary
 
 class RunTest(TestCase):
@@ -22,6 +22,7 @@ class RunTest(TestCase):
         mocker.get('https://files.yande.re/image/64c7aeade1c09807a1417cfe873b81e1/yande.re%20377505%20kimi_no_na_wa%20miyamizu_mitsuha%20seifuku.png',
                    content=read_as_binary('test/yandere/picture_target'))
 
+    @skip('Unimplemented')
     @Mocker()
     def test_run_with_safe_seletor(self, mocker):
         self.setUpTestCase(mocker)

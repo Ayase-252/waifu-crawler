@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from yandere import selector
+from crawler.yandere import selector
 
 
 class SafeSelectorTest(TestCase):

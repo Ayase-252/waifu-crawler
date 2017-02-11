@@ -1,4 +1,4 @@
-from unittest import TestCase
+from unittest import TestCase, skip
 from os import remove
 
 from requests_mock import Mocker
@@ -37,6 +37,7 @@ def setup_fixture(mocker):
                content=b'235031')
 
 
+@skip('unimplemented')
 class TestKonachanRun(TestCase):
 
     @Mocker()

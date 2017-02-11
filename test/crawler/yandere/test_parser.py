@@ -1,13 +1,13 @@
 from unittest import TestCase
 
-from yandere import parser
+from crawler.yandere import parser
 from test.utility import *
 
 
 class QueryListParserTest(TestCase):
 
     def test_parse_query_list_snippet(self):
-        test_snippet = read_file('test/yandere/query_list_test_1')
+        test_snippet = read_file('test/crawler/yandere/query_list_test_1')
 
         pictures = parser.parse_query_list(test_snippet)
         self.assertIn({
@@ -22,7 +22,7 @@ class QueryListParserTest(TestCase):
 class DetailPageParserTest(TestCase):
 
     def test_parse_detail_page_snippet(self):
-        test_snippet = read_file('test/yandere/detail_page_test_1')
+        test_snippet = read_file('test/crawler/yandere/detail_page_test_1')
 
         picture_detail = parser.parse_detail_page(test_snippet)
         self.assertEqual({
@@ -36,7 +36,7 @@ class DetailPageParserTest(TestCase):
         }, picture_detail)
 
     def test_parse_detail_page_snippet_no_png(self):
-        test_snippet = read_file('test/yandere/detail_page_test_no_png')
+        test_snippet = read_file('test/crawler/yandere/detail_page_test_no_png')
 
         picture_detail = parser.parse_detail_page(test_snippet)
         self.assertEqual({
