@@ -11,6 +11,7 @@ class QueryPageHandler:
     """
     Handlers for post page
     """
+
     def __init__(self, selector):
         """
         Initial function

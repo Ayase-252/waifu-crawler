@@ -4,8 +4,11 @@ from crawler.yandere.handler import QueryPageHandler
 from crawler.selector import Selector
 from test.utility import read_file
 
+# TODO: CODE DUPLICATION, REFACOTOR FURTHER
+
 
 class TestQueryPageHandler(TestCase):
+
     def setUp(self):
         self.test_html = read_file('test/crawler/yandere/query_list_test_1')
 

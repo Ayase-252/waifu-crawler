@@ -31,4 +31,4 @@ class KonachanCralwer(Crawler):
             page_limit = self.page_limit
         for page_no in range(page_limit):
             post_page_url = url_base + 'post?page=' + str(page_no)
-            RequestScheduler.request(post_page_url, )
+            RequestScheduler.get(post_page_url, )
