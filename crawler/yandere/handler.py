@@ -4,9 +4,10 @@ Konachan Cralwer Handlers
 This module contains handlers to process pages.
 """
 
-from crawler.konachan.parser import parse_query_page
+from crawler.yandere.parser import parse_query_list
 
-class PostPageHandler:
+
+class QueryPageHandler:
     """
     Handlers for post page
     """
@@ -25,8 +26,6 @@ class PostPageHandler:
         params:
         result_html     HTML text of post page
         """
-        candidates = parse_query_page(result_html)
-        qualified_pictures = selector.select(candidates)
-
-        for qualified_picture in qualified_pictures:
-            RequestScheduler.request(qualified_picture['link'], )
+        candidates = parse_query_list(result_html)
+        qualified_pictures = self._selector.select(candidates)
+        return qualified_pictures
