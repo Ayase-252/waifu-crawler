@@ -1,7 +1,7 @@
 """
 Yandere Crawler
 """
-from requests import ConnectTimeout
+from requests import ConnectTimeout, get
 
 from file_logger.file_logger import FileLogger
 from crawler.crawler import Crawler
@@ -34,6 +34,7 @@ class YandereCrawler(Crawler):
         else:
             self._score_filter = 70
 
+    # TODO: refactor
     def run(self, **kwargs):
         """
         Runs the crawler
@@ -62,6 +63,7 @@ class YandereCrawler(Crawler):
                 new_qualified = query_page_handler(text)
                 print(str(len(new_qualified)) + ' pictures are added to '
                       'pending queue.')
+                qualified_pictures += new_qualified
             except ConnectTimeout:
                 print('Connection to page ' + str(page_no) + ' timed out. '
                       'Please retry in stable network environmnent.')
@@ -69,20 +71,20 @@ class YandereCrawler(Crawler):
         # Parse download link and download it
         for qualified_picture in qualified_pictures:
             try:
-                if not file_logger.is_in(qualified_picture[id]):
-                    print('Requesting to page ' + qualified_picture['link'])
+                if not file_logger.is_in(qualified_picture['id']):
+                    print('Requesting to page ' + qualified_picture['detail url'])
                     text = request_scheduler.get(
-                        qualified_picture['link']).text
-                    links = parse_detail_page(text)
-                    png_link = filter(lambda elem: elem[
-                                      'type'] == 'png', links)
+                        qualified_picture['detail url']).text
+                    links = parse_detail_page(text)['download links']
+                    png_link = list(filter(lambda elem: elem[
+                                      'type'] == 'png', links))
                     if len(png_link) == 1:
                         print('Downloading picture {0}. Type {1}'.format(
                             qualified_picture['id'], 'png'
                         ))
-                        content = request.get(png_link[1]['link']).content
+                        content = get(png_link[0]['link']).content
                         with open(
-                            'yandere-' + str(qualified_picture['id']) + 'png',
+                            'yandere-' + str(qualified_picture['id']) + '.png',
                             'wb'
                         ) as f:
                             f.write(content)
@@ -92,13 +94,13 @@ class YandereCrawler(Crawler):
                         print('Downloading picture {0}. Type {1}'.format(
                             qualified_picture['id'], 'jpg'
                         ))
-                        content = request.get(links[1]['link']).content
+                        content = get(links[0]['link']).content
                         with open(
-                            'yandere-' + str(qualified_picture['id']) + 'jpg',
+                            'yandere-' + str(qualified_picture['id']) + '.jpg',
                             'wb'
                         ) as f:
                             f.write(content)
                         file_logger.add(qualified_picture['id'])
-            except ConnectionTimeout:
+            except ConnectTimeout:
                 print('Connection timed out. '
                       'Please retry in stable network environmnent.')

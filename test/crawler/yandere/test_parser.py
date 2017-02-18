@@ -36,7 +36,8 @@ class DetailPageParserTest(TestCase):
         }, picture_detail)
 
     def test_parse_detail_page_snippet_no_png(self):
-        test_snippet = read_file('test/crawler/yandere/detail_page_test_no_png')
+        test_snippet = read_file(
+            'test/crawler/yandere/detail_page_test_no_png')
 
         picture_detail = parser.parse_detail_page(test_snippet)
         self.assertEqual({
@@ -45,3 +46,19 @@ class DetailPageParserTest(TestCase):
                 'link': 'https://files.yande.re/jpeg/ca41485c5427540bf1c975bee7dd768a/yande.re%20377574%20chuuko_demo_koi_ga_shitai%21%20digital_version%20redrop%20seifuku.jpg'
             }]
         }, picture_detail)
+
+
+class TitleParserTest(TestCase):
+
+    def test_title_parser_1(self):
+        title_text = 'Rating: Questionable Score: 3 Tags: christmas cleavage erect_nipples kantai_collection no_bra open_shirt pantsu suzuya_(kancolle) thighhighs yuzuka User: mash'
+        result = parser.parse_title(title_text)
+
+        self.assertEqual(result,
+                         {
+                             'rating': 'Questionable',
+                             'score': 3,
+                             'tags': ['christmas', 'cleavage', 'erect nipples',
+                                      'kantai collection', 'no bra', 'open shirt', 'pantsu',
+                                      'suzuya (kancolle)', 'thighhighs', 'yuzuka']
+                         })

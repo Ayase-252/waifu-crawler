@@ -35,5 +35,6 @@ class RunTest(TestCase):
 
         self.assertTrue(path.isfile('yandere-377505.png'))
         self.assertEqual(read_file('yandere-377505.png'),
-                         'If you read this, it is right!')
+                         'If you read this, it is right!\n')
         remove('yandere-377505.png')
+        remove('yandere.log')

@@ -25,18 +25,9 @@ def parse_query_list(text):
         parsed_post['id'] = int(id_)
 
         # Parse score, tags and rating
-        title_parttern = re.compile(
-            r'Rating: (?P<rating>\w+) Score: (?P<score>\d+) '
-            'Tags: (?P<tags>[a-zA-z0-9_ ]+) User:'
-        )
         title = post.find('a', class_='thumb').find('img')['title']
-        matched_text = title_parttern.search(title)
-        parsed_post['score'] = int(matched_text.group('score'))
-        parsed_post['rating'] = matched_text.group('rating')
-        parsed_post['tags'] = [
-            tag.replace('_', ' ')
-            for tag in matched_text.group('tags').split(' ')
-        ]
+        parsed_title_meta = parse_title(title)
+        parsed_post.update(parsed_title_meta)
         parsed_posts.append(parsed_post)
 
     return parsed_posts
@@ -71,3 +62,27 @@ def parse_detail_page(detail_page_text):
         })
 
     return download_links
+
+
+def parse_title(title_text):
+    """
+    Parse title to fetch meta data of picture
+
+    params:
+    title_text      Title of picture
+
+    returns:
+    metadata of picture
+    """
+    meta = {}
+    title_parttern = re.compile(
+        r'Rating: (?P<rating>\w+) Score: (?P<score>\d+) Tags: (?P<tags>[a-zA-z0-9_ ()]+) User:'
+    )
+    matched_text = title_parttern.search(title_text)
+    meta['score'] = int(matched_text.group('score'))
+    meta['rating'] = matched_text.group('rating')
+    meta['tags'] = [
+        tag.replace('_', ' ')
+        for tag in matched_text.group('tags').split(' ')
+    ]
+    return meta
