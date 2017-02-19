@@ -1,9 +1,11 @@
 from unittest import TestCase
 from datetime import datetime
+from os import path, remove, removedirs
 
 from requests_mock import Mocker
 
-from request.request_async import AsyncRequestScheduler
+from request import AsyncRequestScheduler
+from test.utility import read_as_binary
 
 
 class TestGetMethod(TestCase):
@@ -30,3 +32,35 @@ class TestIntervalControl(TestCase):
         time_delta = (time_end - time_start).microseconds
 
         self.assertGreater(time_delta, 100)
+
+
+class TestDownloader(TestCase):
+    @Mocker()
+    def test_download_without_specified_path(self, mocker):
+        mocker.get('mocker://test.com', content=b'that it is.')
+
+        request_scheduler = AsyncRequestScheduler(100)
+        request_scheduler.download('mocker://test.com', 'test.file')
+
+        self.assertTrue(path.isfile('test.file'))
+        self.assertEqual(read_as_binary('test.file'), b'that it is.')
+
+        remove('test.file')
+
+    @Mocker()
+    def test_download_with_specified_path(self, mocker):
+        mocker.get('mocker://test.com', content=b'that it is.')
+
+        request_scheduler = AsyncRequestScheduler(100)
+        request_scheduler.download('mocker://test.com', 'test.file',
+                                   'testdir')
+
+        target_path = path.join(path.expanduser('~'), 'testdir/')
+        target_file_path = target_path + 'test.file'
+        self.assertTrue(path.isfile(target_file_path))
+        with open(target_file_path, encoding='utf-8') as f:
+            result = f.read().encode('utf-8')
+        self.assertEqual(result, b'that it is.')
+
+        remove(target_file_path)
+        removedirs(target_path)

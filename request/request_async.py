@@ -7,6 +7,7 @@ language.
 """
 
 from datetime import datetime
+from os import path, mkdir
 
 import requests
 
@@ -69,3 +70,25 @@ class AsyncRequestScheduler:
             'method': 'GET',
             'params': params
         })
+
+    def download(self, url, file_name, file_path=None):
+        """
+        Download file
+
+        Download file from remote server and save it in specified path.
+
+        params:
+        url                         URL of file
+        file_name
+        file_path   default None    If not None, it is relative path to home
+                                    directory.
+        """
+        file_content = self.get(url).content
+        if file_path is not None:
+            file_root = path.join(path.expanduser('~'), file_path + '/')
+            if not path.isdir(file_root):
+                mkdir(file_root)
+        else:
+            file_root = ''
+        with open(file_root + file_name, 'wb') as f:
+            f.write(file_content)
