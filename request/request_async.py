@@ -8,8 +8,11 @@ language.
 
 from datetime import datetime
 from os import path, mkdir
+from math import floor
 
 import requests
+
+from display import ProgressBar
 
 
 class AsyncRequestScheduler:
@@ -44,6 +47,7 @@ class AsyncRequestScheduler:
         url = next_request['url']
         method = next_request['method']
         params = next_request['params']
+        stream = next_request['stream']
         while True:
             if last_request_time is not None:
                 time_interval = (datetime.now() -
@@ -52,12 +56,14 @@ class AsyncRequestScheduler:
                     continue
             last_request_time = datetime.now()
             next_request = yield request_methods[method](url, params,
-                                                         headers=ua)
+                                                         headers=ua,
+                                                         stream=stream)
             url = next_request['url']
             method = next_request['method']
             params = next_request['params']
+            stream = next_request['stream']
 
-    def get(self, url, params=None):
+    def get(self, url, params=None, stream=False):
         """
         Wrapper of get method
 
@@ -68,7 +74,8 @@ class AsyncRequestScheduler:
         return self._send_request_iter.send({
             'url': url,
             'method': 'GET',
-            'params': params
+            'params': params,
+            'stream': stream
         })
 
     def download(self, url, file_name, file_path=None):
@@ -83,12 +90,33 @@ class AsyncRequestScheduler:
         file_path   default None    If not None, it is relative path to home
                                     directory.
         """
-        file_content = self.get(url).content
+        response = self.get(url, stream=True)
         if file_path is not None:
             file_root = path.join(path.expanduser('~'), file_path + '/')
             if not path.isdir(file_root):
                 mkdir(file_root)
         else:
             file_root = ''
+
+        total_length = response.headers.get('content-length')
+
+        if total_length is None:
+            print("Website doesn't provides content-length. Therefore progress"
+                  " bar cannot work. Please wait..")
+            file_content = response.content
+
+        else:
+            downloaded_size = 0
+            total_length = int(total_length)
+            progress_bar = ProgressBar(total_length)
+            file_content = b''
+            for data in response.iter_content(chunk_size=4096):
+                file_content += data
+                downloaded_size += len(data)
+                progress = floor(downloaded_size / total_length * 100)
+                progress_bar.set_progress(progress)
+            if downloaded_size != total_length:
+                raise RuntimeError('Connection is broken.')
+
         with open(file_root + file_name, 'wb') as f:
             f.write(file_content)
