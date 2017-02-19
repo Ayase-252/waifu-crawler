@@ -18,7 +18,7 @@ class ProgressBar:
         blank_blocks = 50 - progress_blocks
         sys.stdout.write('\r')
         sys.stdout.write(
-            '[' '=' * progress_blocks + ' ' * blank_blocks + ']'
+            '[' + '=' * progress_blocks + ' ' * blank_blocks + ']'
             + ' {}%  Total Size: {}Byte'.format(self.progress, self.total_size)
         )
         sys.stdout.flush()
