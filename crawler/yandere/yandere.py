@@ -82,24 +82,21 @@ class YandereCrawler(Crawler):
                         print('Downloading picture {0}. Type {1}'.format(
                             qualified_picture['id'], 'png'
                         ))
-                        content = get(png_link[0]['link']).content
-                        with open(
-                            'yandere-' + str(qualified_picture['id']) + '.png',
-                            'wb'
-                        ) as f:
-                            f.write(content)
+                        request_scheduler.download(
+                            png_link[0]['link'],
+                            'yandere-' + str(qualified_picture['id']) + '.png'
+                        )
                         file_logger.add(qualified_picture['id'])
 
                     else:
                         print('Downloading picture {0}. Type {1}'.format(
                             qualified_picture['id'], 'jpg'
                         ))
+                        request_scheduler.download(
+                            link[0]['link'],
+                            'yandere-' + str(qualified_picture['id']) + '.jpg'
+                        )
                         content = get(links[0]['link']).content
-                        with open(
-                            'yandere-' + str(qualified_picture['id']) + '.jpg',
-                            'wb'
-                        ) as f:
-                            f.write(content)
                         file_logger.add(qualified_picture['id'])
             except ConnectTimeout:
                 print('Connection timed out. '
