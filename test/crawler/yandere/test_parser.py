@@ -26,13 +26,8 @@ class DetailPageParserTest(TestCase):
 
         picture_detail = parser.parse_detail_page(test_snippet)
         self.assertEqual({
-            'download links': [{
-                'type': 'png',
-                'link': 'https://files.yande.re/image/ca41485c5427540bf1c975bee7dd768a/yande.re%20377574%20chuuko_demo_koi_ga_shitai%21%20digital_version%20redrop%20seifuku.png'
-            }, {
-                'type': 'jpeg',
-                'link': 'https://files.yande.re/jpeg/ca41485c5427540bf1c975bee7dd768a/yande.re%20377574%20chuuko_demo_koi_ga_shitai%21%20digital_version%20redrop%20seifuku.jpg'
-            }]
+            'png': 'https://files.yande.re/image/ca41485c5427540bf1c975bee7dd768a/yande.re%20377574%20chuuko_demo_koi_ga_shitai%21%20digital_version%20redrop%20seifuku.png',
+            'jpeg': 'https://files.yande.re/jpeg/ca41485c5427540bf1c975bee7dd768a/yande.re%20377574%20chuuko_demo_koi_ga_shitai%21%20digital_version%20redrop%20seifuku.jpg'
         }, picture_detail)
 
     def test_parse_detail_page_snippet_no_png(self):
@@ -41,10 +36,7 @@ class DetailPageParserTest(TestCase):
 
         picture_detail = parser.parse_detail_page(test_snippet)
         self.assertEqual({
-            'download links': [{
-                'type': 'jpeg',
-                'link': 'https://files.yande.re/jpeg/ca41485c5427540bf1c975bee7dd768a/yande.re%20377574%20chuuko_demo_koi_ga_shitai%21%20digital_version%20redrop%20seifuku.jpg'
-            }]
+            'jpeg': 'https://files.yande.re/jpeg/ca41485c5427540bf1c975bee7dd768a/yande.re%20377574%20chuuko_demo_koi_ga_shitai%21%20digital_version%20redrop%20seifuku.jpg'
         }, picture_detail)
 
 
