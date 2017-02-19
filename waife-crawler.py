@@ -2,7 +2,7 @@
 import argparse
 import sys
 
-from command import waife_crawler
+from crawler import YandereCrawler
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Web crawler for pictures of '
@@ -12,4 +12,6 @@ if __name__ == '__main__':
                         'higher than threshold will be downloaded. '
                         '(Default 100)')
     sys_args = parser.parse_args(sys.argv[1:])
-    waife_crawler.run(score_threshold=sys_args.threshold)
+
+    yandere_crawler = YandereCrawler(score_filter=sys_args.threshold)
+    yandere_crawler.run()
