@@ -55,7 +55,6 @@ def parse_detail_page(detail_page_text):
     if jpeg_anchor is not None:
         download_links['jpeg'] = jpeg_anchor['href']
 
-
     return download_links
 
 
@@ -71,13 +70,17 @@ def parse_title(title_text):
     """
     meta = {}
     title_parttern = re.compile(
-        r'Rating: (?P<rating>\w+) Score: (?P<score>\d+) Tags: (?P<tags>[a-zA-z0-9_ ()]+) User:'
+        r'Rating: (?P<rating>\w+) Score: (?P<score>\d+) Tags: (?P<tags>.+) User:'
     )
     matched_text = title_parttern.search(title_text)
-    meta['score'] = int(matched_text.group('score'))
-    meta['rating'] = matched_text.group('rating')
-    meta['tags'] = [
-        tag.replace('_', ' ')
-        for tag in matched_text.group('tags').split(' ')
-    ]
+    if matched_text is not None:
+        meta['score'] = int(matched_text.group('score'))
+        meta['rating'] = matched_text.group('rating')
+        meta['tags'] = [
+            tag.replace('_', ' ')
+            for tag in matched_text.group('tags').split(' ')
+        ]
+    else:
+        raise RuntimeError('Title cannot be parsed! \nFailed title: ' +
+                           title_text)
     return meta

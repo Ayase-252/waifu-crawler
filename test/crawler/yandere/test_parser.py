@@ -54,3 +54,17 @@ class TitleParserTest(TestCase):
                                       'kantai collection', 'no bra', 'open shirt', 'pantsu',
                                       'suzuya (kancolle)', 'thighhighs', 'yuzuka']
                          })
+
+    def test_title_parser_2(self):
+        title_text = 'Rating: Safe Score: 10 Tags: aqua_(kono_subarashii_sekai_ni_shukufuku_wo!) kono_subarashii_sekai_ni_shukufuku_wo! saraki see_through User: Humanpinka'
+        result = parser.parse_title(title_text)
+
+        self.assertEqual(result,
+                         {
+                             'rating': 'Safe',
+                             'score': 10,
+                             'tags': ['aqua (kono subarashii sekai ni shukufuku wo!)',
+                                      'kono subarashii sekai ni shukufuku wo!',
+                                       'saraki',
+                                      'see through']
+                         })

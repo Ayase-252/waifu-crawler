@@ -81,6 +81,7 @@ class YandereCrawler(Crawler):
 
                     print('Downloading picture {0}'.format(id_))
                     _download(links, id_, request_scheduler)
+                    print('Downloaded.')
                     file_logger.add(id_)
 
             except ConnectTimeout:
