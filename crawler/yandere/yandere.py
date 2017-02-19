@@ -70,34 +70,37 @@ class YandereCrawler(Crawler):
 
         # Parse download link and download it
         for qualified_picture in qualified_pictures:
+            id_ = qualified_picture['id']
             try:
-                if not file_logger.is_in(qualified_picture['id']):
-                    print('Requesting to page ' + qualified_picture['detail url'])
+                if not file_logger.is_in(id_):
+                    print('Requesting to page ' +
+                          qualified_picture['detail url'])
                     text = request_scheduler.get(
                         qualified_picture['detail url']).text
-                    links = parse_detail_page(text)['download links']
-                    png_link = list(filter(lambda elem: elem[
-                                      'type'] == 'png', links))
-                    if len(png_link) == 1:
-                        print('Downloading picture {0}. Type {1}'.format(
-                            qualified_picture['id'], 'png'
-                        ))
-                        request_scheduler.download(
-                            png_link[0]['link'],
-                            'yandere-' + str(qualified_picture['id']) + '.png'
-                        )
-                        file_logger.add(qualified_picture['id'])
+                    links = parse_detail_page(text)
 
-                    else:
-                        print('Downloading picture {0}. Type {1}'.format(
-                            qualified_picture['id'], 'jpg'
-                        ))
-                        request_scheduler.download(
-                            link[0]['link'],
-                            'yandere-' + str(qualified_picture['id']) + '.jpg'
-                        )
-                        content = get(links[0]['link']).content
-                        file_logger.add(qualified_picture['id'])
+                    print('Downloading picture {0}'.format(id_))
+                    _download(links, id_, request_scheduler)
+                    file_logger.add(id_)
+
             except ConnectTimeout:
                 print('Connection timed out. '
                       'Please retry in stable network environmnent.')
+
+
+def _download(parsed_links, id_, request_scheduler):
+    """
+    Download picture based on parsed_links
+    """
+    type_codes = ['png', 'jpg']
+    type_suffix = {
+        'png': '.png',
+        'jpeg': '.jpg'
+    }
+    for type_ in type_codes:
+        if type_ in parsed_links:
+            request_scheduler.download(
+                parsed_links[type_],
+                'yandere-' + str(id_) + type_suffix[type_]
+            )
+            break
