@@ -28,5 +28,4 @@ class QueryPageHandler:
         result_html     HTML text of post page
         """
         candidates = parse_query_list(result_html)
-        qualified_pictures = self._selector.select(candidates)
-        return qualified_pictures
+        return self._selector.select(candidates)

@@ -100,6 +100,7 @@ def _download(parsed_links, id_, request_scheduler):
     }
     for type_ in type_codes:
         if type_ in parsed_links:
+            print(parsed_links[type_])
             request_scheduler.download(
                 parsed_links[type_],
                 'yandere-' + str(id_) + type_suffix[type_]
