@@ -33,13 +33,13 @@ class YandereCrawler(Crawler):
             self._score_filter = kwargs['score_filter']
         else:
             self._score_filter = 70
+        self.request_scheduler = AsyncRequestScheduler(2000)
 
     # TODO: refactor
     def run(self, **kwargs):
         """
         Runs the crawler
         """
-        request_scheduler = AsyncRequestScheduler(2000)
         base_url = r'https://yande.re/post'
         qualified_pictures = []
 
@@ -57,7 +57,7 @@ class YandereCrawler(Crawler):
         for page_no in range(1, self._page_limit + 1):
             try:
                 print('Requesting to page ' + str(page_no))
-                text = request_scheduler.get(base_url, params={
+                text = self.request_scheduler.get(base_url, params={
                     'page': page_no
                 }).text
                 new_qualified = query_page_handler(text)
@@ -71,37 +71,50 @@ class YandereCrawler(Crawler):
         # Parse download link and download it
         for qualified_picture in qualified_pictures:
             id_ = qualified_picture['id']
+            url = qualified_picture['detail url']
             try:
                 if not file_logger.is_in(id_):
-                    print('Requesting to page ' +
-                          qualified_picture['detail url'])
-                    text = request_scheduler.get(
-                        qualified_picture['detail url']).text
-                    links = parse_detail_page(text)
-
+                    print('Requesting to page {}'.format(url))
+                    text = self.request_scheduler.get(url).text
+                    links = self._parse_detail_page(text, url)
                     print('Downloading picture {0}'.format(id_))
-                    _download(links, id_, request_scheduler)
-                    print('Downloaded.')
+                    self._download(links, id_)
+                    print('\nDownloaded.')
                     file_logger.add(id_)
 
             except ConnectTimeout:
                 print('Connection timed out. '
                       'Please retry in stable network environmnent.')
 
+    def _download(self, parsed_links, id_):
+        """
+        Download picture based on parsed_links
+        """
+        type_codes = ['png', 'jpeg']
+        type_suffix = {
+            'png': '.png',
+            'jpeg': '.jpg'
+        }
+        for type_ in type_codes:
+            if type_ in parsed_links:
+                self.request_scheduler.download(
+                    parsed_links[type_],
+                    'yandere-' + str(id_) + type_suffix[type_]
+                )
+                break
 
-def _download(parsed_links, id_, request_scheduler):
-    """
-    Download picture based on parsed_links
-    """
-    type_codes = ['png', 'jpg']
-    type_suffix = {
-        'png': '.png',
-        'jpeg': '.jpg'
-    }
-    for type_ in type_codes:
-        if type_ in parsed_links:
-            request_scheduler.download(
-                parsed_links[type_],
-                'yandere-' + str(id_) + type_suffix[type_]
-            )
-            break
+    def _parse_detail_page(self, text, url):
+        """
+        Wrapper of process to parsing detail page
+        """
+        try:
+            links = parse_detail_page(text)
+            return links
+        except RuntimeError:
+            print('=' * 25)
+            print('Parsing Error: Please report an issue in '
+                  'https://github.com/Ayase-252/waife-crawler/issues with '
+                  'following message.')
+            print('URL: {}'.format(url))
+            print('=' * 25)
+            raise RuntimeError('Parse Error: {}'.format(url))

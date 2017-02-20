@@ -39,6 +39,17 @@ class DetailPageParserTest(TestCase):
             'jpeg': 'https://files.yande.re/jpeg/ca41485c5427540bf1c975bee7dd768a/yande.re%20377574%20chuuko_demo_koi_ga_shitai%21%20digital_version%20redrop%20seifuku.jpg'
         }, picture_detail)
 
+    def test_parsing_failed(self):
+        """
+        In case of failure to parse, method should raise a RuntimeError to
+        inform caller to handle it.
+        """
+        test_text = "<p>No such parse</p>"
+
+        with self.assertRaises(RuntimeError):
+            parser.parse_detail_page(test_text)
+
+
 
 class TitleParserTest(TestCase):
 
