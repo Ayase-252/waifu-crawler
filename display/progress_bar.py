@@ -14,8 +14,8 @@ class ProgressBar:
         self._update()
 
     def _update(self):
-        progress_blocks = self.progress // 2
-        blank_blocks = 50 - progress_blocks
+        progress_blocks = self.progress // 4
+        blank_blocks = 25 - progress_blocks
         sys.stdout.write('\r')
         sys.stdout.write(
             '[' + '=' * progress_blocks + ' ' * blank_blocks + ']'
