@@ -90,7 +90,7 @@ class YandereCrawler(Crawler):
         """
         Download picture based on parsed_links
         """
-        type_codes = ['png', 'jpg']
+        type_codes = ['png', 'jpeg']
         type_suffix = {
             'png': '.png',
             'jpeg': '.jpg'
@@ -108,10 +108,9 @@ class YandereCrawler(Crawler):
         Wrapper of process to parsing detail page
         """
         try:
-
             links = parse_detail_page(text)
             return links
-        except RuntimeError as e:
+        except RuntimeError:
             print('=' * 25)
             print('Parsing Error: Please report an issue in '
                   'https://github.com/Ayase-252/waife-crawler/issues with '

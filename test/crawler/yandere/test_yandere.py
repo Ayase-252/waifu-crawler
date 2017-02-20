@@ -39,9 +39,28 @@ class RunTest(TestCase):
         remove('yandere-377505.png')
         remove('yandere.log')
 
+
 class DetailPageParsingFailTest(TestCase):
     def test_detail_page_parsing_failed(self):
         crawler = YandereCrawler()
 
-        with self.assertRaisesRegexp(RuntimeError, 'https://not.exist.com'):
+        with self.assertRaisesRegex(RuntimeError, 'https://not.exist.com'):
             crawler._parse_detail_page('<p></p>', 'https://not.exist.com')
+
+
+class DownloaderTest(TestCase):
+    @Mocker()
+    def test_jpeg_only_picture_test(self, mocker):
+        mocker.get('mock://test.com', content=b'hello world')
+        links = {
+            'jpeg': 'mock://test.com'
+        }
+        id_ = 112233
+
+        crawler = YandereCrawler()
+        crawler._download(links, id_)
+
+        self.assertTrue(path.isfile('yandere-112233.jpg'))
+        self.assertEqual(read_as_binary('yandere-112233.jpg'),
+                         b'hello world')
+        remove('yandere-112233.jpg')
