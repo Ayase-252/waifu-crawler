@@ -38,3 +38,10 @@ class RunTest(TestCase):
                          'If you read this, it is right!\n')
         remove('yandere-377505.png')
         remove('yandere.log')
+
+class DetailPageParsingFailTest(TestCase):
+    def test_detail_page_parsing_failed(self):
+        crawler = YandereCrawler()
+
+        with self.assertRaisesRegexp(RuntimeError, 'https://not.exist.com'):
+            crawler._parse_detail_page('<p></p>', 'https://not.exist.com')

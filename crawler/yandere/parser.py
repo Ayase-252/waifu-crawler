@@ -55,6 +55,9 @@ def parse_detail_page(detail_page_text):
     if jpeg_anchor is not None:
         download_links['jpeg'] = jpeg_anchor['href']
 
+    if download_links == {}:
+        raise RuntimeError('Page cannot be parsed: Parsing result is empty.')
+
     return download_links
 
 
