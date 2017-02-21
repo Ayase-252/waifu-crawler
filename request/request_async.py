@@ -14,6 +14,12 @@ import requests
 
 from display import ProgressBar
 
+# Connection Timeout set
+# See http://docs.python-requests.org/en/master/user/advanced/
+# Timeouts
+_CONNECT_TIMEOUT = 15
+_READ_TIMEOUT = 60
+
 
 class AsyncRequestScheduler:
     """
@@ -55,9 +61,12 @@ class AsyncRequestScheduler:
                 if time_interval < self._request_interval:
                     continue
             last_request_time = datetime.now()
-            next_request = yield request_methods[method](url, params,
-                                                         headers=ua,
-                                                         stream=stream)
+            next_request = yield request_methods[method](
+                url, params,
+                headers=ua,
+                stream=stream,
+                timeout=(_CONNECT_TIMEOUT, _READ_TIMEOUT)
+            )
             url = next_request['url']
             method = next_request['method']
             params = next_request['params']
