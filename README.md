@@ -7,7 +7,7 @@ Hope this small crawler can ease your works in choose your "waife".
 
 # Features
 
-* Thread-based http request scheduler
+* Generator-based http request scheduler
 * Highly fiexible choose strategy (Coming Soon)
 
 # Documents

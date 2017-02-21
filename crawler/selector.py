@@ -30,15 +30,19 @@ class Selector:
         candidates_copy = copy.deepcopy(candidates)
         eligible_pictures = []
         for decisive_selector in self._decisive_selector_queue:
-            for candidate in candidates_copy:
+            for candidate in candidates:
                 if decisive_selector(candidate):
                     eligible_pictures.append(candidate)
                     candidates_copy.remove(candidate)
 
         for selector in self._selector_queue:
+            remove_list = []
             for candidate in candidates_copy:
                 if not selector(candidate):
-                    candidates_copy.remove(candidate)
+                    remove_list.append(candidate)
+            for remove_item in remove_list:
+                candidates_copy.remove(remove_item)
+
         return candidates_copy + eligible_pictures
 
     def add_decisive_selector(self, decisive_selector):

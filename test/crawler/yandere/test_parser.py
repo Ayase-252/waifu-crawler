@@ -39,6 +39,17 @@ class DetailPageParserTest(TestCase):
             'jpeg': 'https://files.yande.re/jpeg/ca41485c5427540bf1c975bee7dd768a/yande.re%20377574%20chuuko_demo_koi_ga_shitai%21%20digital_version%20redrop%20seifuku.jpg'
         }, picture_detail)
 
+    def test_parsing_failed(self):
+        """
+        In case of failure to parse, method should raise a RuntimeError to
+        inform caller to handle it.
+        """
+        test_text = "<p>No such parse</p>"
+
+        with self.assertRaises(RuntimeError):
+            parser.parse_detail_page(test_text)
+
+
 
 class TitleParserTest(TestCase):
 
@@ -53,4 +64,18 @@ class TitleParserTest(TestCase):
                              'tags': ['christmas', 'cleavage', 'erect nipples',
                                       'kantai collection', 'no bra', 'open shirt', 'pantsu',
                                       'suzuya (kancolle)', 'thighhighs', 'yuzuka']
+                         })
+
+    def test_title_parser_2(self):
+        title_text = 'Rating: Safe Score: 10 Tags: aqua_(kono_subarashii_sekai_ni_shukufuku_wo!) kono_subarashii_sekai_ni_shukufuku_wo! saraki see_through User: Humanpinka'
+        result = parser.parse_title(title_text)
+
+        self.assertEqual(result,
+                         {
+                             'rating': 'Safe',
+                             'score': 10,
+                             'tags': ['aqua (kono subarashii sekai ni shukufuku wo!)',
+                                      'kono subarashii sekai ni shukufuku wo!',
+                                       'saraki',
+                                      'see through']
                          })
