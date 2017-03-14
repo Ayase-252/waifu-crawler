@@ -55,6 +55,11 @@ def parse_detail_page(detail_page_text):
     if jpeg_anchor is not None:
         download_links['jpeg'] = jpeg_anchor['href']
 
+    jpeg_parttern_2 = re.compile(r'View larger version')
+    jpeg_anchor_2 = parsed_text.find('a', text=jpeg_parttern_2)
+    if jpeg_anchor_2 is not None:
+        download_links['jpeg'] = jpeg_anchor_2['href']
+
     if download_links == {}:
         raise RuntimeError('Page cannot be parsed: Parsing result is empty.')
 

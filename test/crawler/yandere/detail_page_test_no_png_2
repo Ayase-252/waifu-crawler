@@ -1,0 +1,20 @@
+<div>
+  <h5>Options</h5>
+  <ul>
+    <li><a class="js-posts-show-edit-tab" href="#">Edit</a></li>
+    <!--
+      <li><a href="#" onclick="Post.resize_image(); return false;">Resize image</a></li>
+     -->
+      <li><a class="original-file-unchanged highres-show" id="highres-show" href="https://files.yande.re/image/d87856e4096399ba9fa421826f36bf12/yande.re%20385948%20dress%20girls_frontline%20gun%20heels%20suisai.%20tagme%20thighhighs%20torn_clothes%20wedding_dress.jpg">View larger version</a>
+      </li>
+      <li><a class="original-file-unchanged" id="highres" href="https://files.yande.re/image/d87856e4096399ba9fa421826f36bf12/yande.re%20385948%20dress%20girls_frontline%20gun%20heels%20suisai.%20tagme%20thighhighs%20torn_clothes%20wedding_dress.jpg">Image (265 KB JPG)</a>
+      </li>
+      <li><a href="#" onclick="User.run_login(false, function() { Post.flag(385948, function() { window.location.reload(); }) }); return false;">Flag for deletion</a></li>
+      <li><a href="#" onclick="User.run_login(false, function() { Note.create(385948) }); return false;">Add translation</a></li>
+    <li id="add-to-favs"><a href="#">Add to favorites</a></li>
+    <li id="remove-from-favs" style="display: none;"><a href="#">Remove from favorites</a></li>
+      <li id="add-to-pool" class="advanced-editing"><a data-remote="true" href="/pool/select?post_id=385948">Add to pool</a></li>
+      <li id="set-avatar"><a href="/user/set_avatar/385948">Set avatar</a></li>
+    <li><a href="/history?search=post%3A385948">Post history</a></li>
+  </ul>
+</div>

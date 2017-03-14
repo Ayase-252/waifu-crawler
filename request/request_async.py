@@ -80,12 +80,22 @@ class AsyncRequestScheduler:
         url         URL
         parmas      Parameters of the request
         """
-        return self._send_request_iter.send({
-            'url': url,
-            'method': 'GET',
-            'params': params,
-            'stream': stream
-        })
+        try:
+            return self._send_request_iter.send({
+                'url': url,
+                'method': 'GET',
+                'params': params,
+                'stream': stream
+            })
+        except StopIteration:
+            self._send_request_iter = self._send_request()
+            next(self._send_request_iter)
+            return self._send_request_iter.send({
+                'url': url,
+                'method': 'GET',
+                'params': params,
+                'stream': stream
+            })
 
     def download(self, url, file_name, file_path=None):
         """

@@ -3,6 +3,7 @@ from datetime import datetime
 from os import path, remove, removedirs
 
 from requests_mock import Mocker
+from requests.exceptions import ConnectTimeout
 
 from request import AsyncRequestScheduler
 from test.utility import read_as_binary
@@ -16,6 +17,18 @@ class TestGetMethod(TestCase):
         request_scheduler = AsyncRequestScheduler(100)
         res = request_scheduler.get('mock://test.com')
 
+        self.assertEqual(res.text, 'right text')
+
+    @Mocker()
+    def test_resume_from_failed_request(self, mocker):
+        mocker.get('mocker://test.com', exc=ConnectTimeout)
+
+        request_scheduler = AsyncRequestScheduler(100)
+        with self.assertRaises(ConnectTimeout):
+            request_scheduler.get('mocker://test.com')
+
+        mocker.get('mocker://test.com', text='right text')
+        res = request_scheduler.get('mocker://test.com')
         self.assertEqual(res.text, 'right text')
 
 
