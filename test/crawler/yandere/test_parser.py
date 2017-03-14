@@ -39,6 +39,16 @@ class DetailPageParserTest(TestCase):
             'jpeg': 'https://files.yande.re/jpeg/ca41485c5427540bf1c975bee7dd768a/yande.re%20377574%20chuuko_demo_koi_ga_shitai%21%20digital_version%20redrop%20seifuku.jpg'
         }, picture_detail)
 
+    def test_parse_detail_page_snippet_no_png_2(self):
+        test_snippet = read_file(
+            'test/crawler/yandere/detail_page_test_no_png_2')
+
+        picture_detail = parser.parse_detail_page(test_snippet)
+        self.assertEqual({
+            'jpeg': 'https://files.yande.re/image/d87856e4096399ba9fa421826f36bf12/yande.re%20385948%20dress%20girls_frontline%20gun%20heels%20suisai.%20tagme%20thighhighs%20torn_clothes%20wedding_dress.jpg'
+        }, picture_detail)
+
+
     def test_parsing_failed(self):
         """
         In case of failure to parse, method should raise a RuntimeError to
