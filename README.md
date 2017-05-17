@@ -7,8 +7,8 @@ Hope this small crawler can ease your works in choose your "waife".
 
 # Features
 
-* Generator-based http request scheduler
-* Highly fiexible choose strategy (Coming Soon)
+*   Generator-based http request scheduler
+*   Highly fiexible choose strategy (Coming Soon)
 
 # Documents
 #TODO
