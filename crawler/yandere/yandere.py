@@ -10,6 +10,7 @@ from request.request_async import AsyncRequestScheduler
 from crawler.yandere.handler import QueryPageHandler
 from crawler.yandere.parser import parse_detail_page
 from crawler.yandere.selector import safe_selector, score_selector_factory
+from crawler.configuration import Configuration
 from conf import FILE_DESTINATION
 
 
@@ -101,7 +102,7 @@ class YandereCrawler(Crawler):
                 self.request_scheduler.download(
                     parsed_links[type_],
                     'yandere-' + str(id_) + type_suffix[type_],
-                    FILE_DESTINATION
+                    Configuration.get_file_destination()
                 )
                 break
 
