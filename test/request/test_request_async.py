@@ -68,8 +68,8 @@ class TestDownloader(TestCase):
         request_scheduler.download('mocker://test.com', 'test.file',
                                    'testdir')
 
-        target_path = path.join(path.expanduser('~'), 'testdir/')
-        target_file_path = target_path + 'test.file'
+        target_path = path.abspath('./testdir')
+        target_file_path = path.join(target_path, 'test.file')
         self.assertTrue(path.isfile(target_file_path))
         with open(target_file_path, encoding='utf-8') as f:
             result = f.read().encode('utf-8')

@@ -111,11 +111,11 @@ class AsyncRequestScheduler:
         """
         response = self.get(url, stream=True)
         if file_path is not None:
-            file_root = path.join(path.expanduser('~'), file_path + '/')
+            file_root = path.abspath(file_path)
             if not path.isdir(file_root):
                 mkdir(file_root)
         else:
-            file_root = ''
+            file_root = path.abspath('.')
 
         total_length = response.headers.get('content-length')
 
@@ -137,5 +137,5 @@ class AsyncRequestScheduler:
             if downloaded_size != total_length:
                 raise RuntimeError('Connection is broken.')
 
-        with open(file_root + file_name, 'wb') as f:
+        with open(path.join(file_root, file_name), 'wb') as f:
             f.write(file_content)
